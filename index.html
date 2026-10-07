@@ -1,0 +1,734 @@
+<!DOCTYPE html>
+<html lang="pt-BR" class="dark scroll-smooth">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CorpTsuki | Criação de Sites e Desenvolvimento Web</title>
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            darkMode: 'class',
+            theme: {
+                extend: {
+                    colors: {
+                        brand: {
+                            dark: '#05070e',
+                            navy: '#0b1021',
+                            card: '#11182d',
+                            blue: '#0088ff',
+                            cyan: '#00d4ff',
+                            glow: '#0055ff'
+                        }
+                    },
+                    fontFamily: {
+                        sans: ['Inter', 'sans-serif'],
+                    },
+                    boxShadow: {
+                        'neon-blue': '0 0 20px rgba(0, 136, 255, 0.4), 0 0 40px rgba(0, 212, 255, 0.2)',
+                        'neon-hover': '0 0 30px rgba(0, 136, 255, 0.7), 0 0 60px rgba(0, 212, 255, 0.4)',
+                        'card-glow': '0 4px 30px rgba(0, 136, 255, 0.08)'
+                    }
+                }
+            }
+        }
+    </script>
+    <!-- FontAwesome Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #05070e;
+            color: #e2e8f0;
+            overflow-x: hidden;
+        }
+
+        /* Custom Animated Background Particles Canvas */
+        #bg-canvas {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: -1;
+            pointer-events: none;
+        }
+
+        /* Gradient Text Helper */
+        .text-gradient {
+            background: linear-gradient(135deg, #ffffff 0%, #00d4ff 50%, #0077ff 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        /* Tech Cyber Grid Background */
+        .cyber-grid {
+            background-image: linear-gradient(to right, rgba(0, 136, 255, 0.05) 1px, transparent 1px),
+                              linear-gradient(to bottom, rgba(0, 136, 255, 0.05) 1px, transparent 1px);
+            background-size: 40px 40px;
+        }
+
+        /* Glassmorphism Card Effect */
+        .glass-card {
+            background: rgba(17, 24, 45, 0.65);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            border: 1px solid rgba(0, 212, 255, 0.12);
+        }
+
+        .glass-card:hover {
+            border-color: rgba(0, 212, 255, 0.35);
+        }
+
+        /* Glowing Pulse Animation */
+        @keyframes pulseGlow {
+            0%, 100% { opacity: 0.4; transform: scale(1); }
+            50% { opacity: 0.8; transform: scale(1.05); }
+        }
+        .pulse-glow {
+            animation: pulseGlow 4s infinite ease-in-out;
+        }
+    </style>
+</head>
+<body class="cyber-grid min-h-screen flex flex-col justify-between">
+
+    <canvas id="bg-canvas"></canvas>
+
+    <!-- HEADER / NAVIGATION -->
+    <header class="sticky top-0 z-50 glass-card border-b border-brand-blue/10 bg-brand-dark/80 backdrop-blur-md transition-all duration-300" id="navbar">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex items-center justify-between h-20">
+                
+                <!-- Logo Image -->
+                <a href="#home" class="flex items-center gap-3 group">
+                    <img src="Logotipo.jpg" alt="CorpTsuki Logo" class="h-12 w-auto object-contain rounded-lg border border-brand-blue/20 group-hover:border-brand-cyan/60 transition-all duration-300 shadow-md">
+                </a>
+
+                <!-- Desktop Navigation Links -->
+                <nav class="hidden md:flex items-center space-x-8 text-sm font-medium">
+                    <a href="#home" class="hover:text-brand-cyan transition-colors duration-200">Início</a>
+                    <a href="#services" class="hover:text-brand-cyan transition-colors duration-200">Serviços</a>
+                    <a href="#about" class="hover:text-brand-cyan transition-colors duration-200">Sobre Nós</a>
+                    <a href="#portfolio" class="hover:text-brand-cyan transition-colors duration-200">Portfólio</a>
+                    <a href="#testimonials" class="hover:text-brand-cyan transition-colors duration-200">Depoimentos</a>
+                    <a href="#contact" class="hover:text-brand-cyan transition-colors duration-200">Contato</a>
+                </nav>
+
+                <!-- Desktop CTA Button -->
+                <div class="hidden md:flex items-center">
+                    <a href="#contact" class="px-6 py-2.5 rounded-full text-sm font-semibold text-white bg-gradient-to-r from-brand-blue to-brand-cyan shadow-neon-blue hover:shadow-neon-hover transform hover:-translate-y-0.5 transition-all duration-300 flex items-center gap-2">
+                        <span>Fazer Orçamento</span>
+                        <i class="fa-solid fa-arrow-right text-xs"></i>
+                    </a>
+                </div>
+
+                <!-- Mobile Menu Button -->
+                <div class="md:hidden flex items-center">
+                    <button id="mobile-menu-btn" type="button" class="text-slate-300 hover:text-white focus:outline-none p-2" aria-label="Abrir Menu">
+                        <i class="fa-solid fa-bars text-2xl"></i>
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Mobile Menu Navigation -->
+        <div id="mobile-menu" class="hidden md:hidden glass-card border-t border-brand-blue/20 px-4 pt-4 pb-6 space-y-3">
+            <a href="#home" class="mobile-link block px-3 py-2 rounded-md text-base font-medium text-slate-200 hover:bg-brand-blue/10 hover:text-brand-cyan">Início</a>
+            <a href="#services" class="mobile-link block px-3 py-2 rounded-md text-base font-medium text-slate-200 hover:bg-brand-blue/10 hover:text-brand-cyan">Serviços</a>
+            <a href="#about" class="mobile-link block px-3 py-2 rounded-md text-base font-medium text-slate-200 hover:bg-brand-blue/10 hover:text-brand-cyan">Sobre Nós</a>
+            <a href="#portfolio" class="mobile-link block px-3 py-2 rounded-md text-base font-medium text-slate-200 hover:bg-brand-blue/10 hover:text-brand-cyan">Portfólio</a>
+            <a href="#testimonials" class="mobile-link block px-3 py-2 rounded-md text-base font-medium text-slate-200 hover:bg-brand-blue/10 hover:text-brand-cyan">Depoimentos</a>
+            <a href="#contact" class="mobile-link block px-3 py-2 rounded-md text-base font-medium text-slate-200 hover:bg-brand-blue/10 hover:text-brand-cyan">Contato</a>
+            <a href="#contact" class="mobile-link block w-full text-center mt-4 px-6 py-3 rounded-full text-sm font-semibold text-white bg-gradient-to-r from-brand-blue to-brand-cyan shadow-neon-blue">
+                FAÇA O SEU SITE
+            </a>
+        </div>
+    </header>
+
+    <!-- HERO SECTION -->
+    <section id="home" class="relative pt-12 pb-20 md:pt-16 md:pb-32 overflow-hidden">
+        <!-- Glow Orbs -->
+        <div class="absolute top-1/4 left-1/2 -translate-x-1/2 w-[600px] h-[350px] bg-brand-blue/20 blur-[130px] rounded-full pointer-events-none pulse-glow"></div>
+
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
+            <div class="grid grid-cols-1 lg:grid-cols-12 gap-12 items-center">
+                
+                <!-- Hero Text & CTA -->
+                <div class="lg:col-span-6 text-center lg:text-left space-y-6">
+                    <div class="inline-flex items-center gap-2 px-3 py-1.5 rounded-full glass-card border border-brand-cyan/30 text-xs font-semibold uppercase tracking-wider text-brand-cyan shadow-sm">
+                        <span class="w-2 h-2 rounded-full bg-brand-cyan animate-ping"></span>
+                        Soluções Web de Alta Performance
+                    </div>
+
+                    <h1 class="text-4xl sm:text-5xl lg:text-6xl font-extrabold tracking-tight leading-tight">
+                        Transforme sua marca com a <span class="text-gradient">CorpTsuki</span>
+                    </h1>
+
+                    <p class="text-slate-300 text-lg leading-relaxed max-w-xl mx-auto lg:mx-0">
+                        Desenvolvemos websites de ponta, sistemas web e e-commerces futuristas focados em alta conversão, performance extrema e design memorável.
+                    </p>
+
+                    <div class="pt-4 flex flex-col sm:flex-row gap-4 justify-center lg:justify-start">
+                        <a href="#contact" class="px-8 py-4 rounded-xl text-base font-bold text-white bg-gradient-to-r from-brand-blue to-brand-cyan shadow-neon-blue hover:shadow-neon-hover transform hover:-translate-y-1 transition-all duration-300 text-center flex items-center justify-center gap-3">
+                            <i class="fa-solid fa-rocket"></i>
+                            <span>FAÇA O SEU SITE</span>
+                        </a>
+                        <a href="#portfolio" class="px-8 py-4 rounded-xl text-base font-semibold text-slate-200 glass-card hover:bg-brand-blue/10 hover:text-white border border-brand-blue/30 transition-all duration-300 text-center flex items-center justify-center gap-2">
+                            <span>Ver Projetos</span>
+                            <i class="fa-solid fa-arrow-down text-xs"></i>
+                        </a>
+                    </div>
+
+                    <!-- Highlights Stats -->
+                    <div class="pt-8 grid grid-cols-3 gap-4 border-t border-slate-800/80">
+                        <div>
+                            <p class="text-2xl sm:text-3xl font-bold text-gradient">+150</p>
+                            <p class="text-xs text-slate-400 font-medium mt-1">Sites Entregues</p>
+                        </div>
+                        <div>
+                            <p class="text-2xl sm:text-3xl font-bold text-gradient">99.8%</p>
+                            <p class="text-xs text-slate-400 font-medium mt-1">Satisfação</p>
+                        </div>
+                        <div>
+                            <p class="text-2xl sm:text-3xl font-bold text-gradient">24/7</p>
+                            <p class="text-xs text-slate-400 font-medium mt-1">Suporte Técnico</p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Hero Banner Image Showcase -->
+                <div class="lg:col-span-6 relative">
+                    <div class="relative mx-auto max-w-lg lg:max-w-none rounded-2xl p-2 glass-card shadow-neon-blue border border-brand-cyan/30 group transition-transform duration-500 hover:scale-[1.02]">
+                        <!-- Main Banner Image -->
+                        <img src="Banner.jpg" alt="CorpTsuki Banner - Criação de Sites" class="w-full h-auto rounded-xl object-cover shadow-2xl">
+                        
+                        <!-- Floating Badge Overlay -->
+                        <div class="absolute -bottom-6 -left-6 glass-card p-4 rounded-xl hidden sm:flex items-center gap-4 border border-brand-cyan/40 shadow-xl bg-brand-card/90">
+                            <div class="w-12 h-12 rounded-lg bg-brand-blue/20 flex items-center justify-center text-brand-cyan text-2xl">
+                                <i class="fa-solid fa-shield-halved"></i>
+                            </div>
+                            <div>
+                                <h4 class="text-sm font-bold text-white">Garantia & Qualidade</h4>
+                                <p class="text-xs text-slate-400">Código Limpo e Seguro</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </section>
+
+    <!-- SERVICES SECTION -->
+    <section id="services" class="py-20 relative bg-brand-navy/30 border-y border-brand-blue/10">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="text-center max-w-3xl mx-auto mb-16 space-y-4">
+                <h2 class="text-xs font-bold uppercase tracking-widest text-brand-cyan">Nossos Serviços</h2>
+                <h3 class="text-3xl sm:text-4xl font-extrabold text-white">Soluções completas para a sua presença digital</h3>
+                <p class="text-slate-400 text-base">Utilizamos as tecnologias mais modernas para transformar sua visão em resultados concretos na web.</p>
+            </div>
+
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
+                
+                <!-- Service 1 -->
+                <div class="glass-card p-8 rounded-2xl transition-all duration-300 hover:-translate-y-2 hover:shadow-neon-blue group relative overflow-hidden">
+                    <div class="w-14 h-14 rounded-xl bg-gradient-to-br from-brand-blue/20 to-brand-cyan/20 border border-brand-cyan/30 flex items-center justify-center text-brand-cyan text-2xl mb-6 group-hover:scale-110 transition-transform">
+                        <i class="fa-solid fa-code"></i>
+                    </div>
+                    <h4 class="text-xl font-bold text-white mb-3 group-hover:text-brand-cyan transition-colors">Criação de Sites</h4>
+                    <p class="text-slate-400 text-sm leading-relaxed">Websites institucionais e landing pages exclusivas, 100% responsivos e otimizados para máxima conversão de clientes.</p>
+                </div>
+
+                <!-- Service 2 -->
+                <div class="glass-card p-8 rounded-2xl transition-all duration-300 hover:-translate-y-2 hover:shadow-neon-blue group relative overflow-hidden">
+                    <div class="w-14 h-14 rounded-xl bg-gradient-to-br from-brand-blue/20 to-brand-cyan/20 border border-brand-cyan/30 flex items-center justify-center text-brand-cyan text-2xl mb-6 group-hover:scale-110 transition-transform">
+                        <i class="fa-solid fa-cart-shopping"></i>
+                    </div>
+                    <h4 class="text-xl font-bold text-white mb-3 group-hover:text-brand-cyan transition-colors">E-Commerce</h4>
+                    <p class="text-slate-400 text-sm leading-relaxed">Lojas virtuais completas com checkout transparente, integração com meios de pagamento, frete e gerenciamento simplificado.</p>
+                </div>
+
+                <!-- Service 3 -->
+                <div class="glass-card p-8 rounded-2xl transition-all duration-300 hover:-translate-y-2 hover:shadow-neon-blue group relative overflow-hidden">
+                    <div class="w-14 h-14 rounded-xl bg-gradient-to-br from-brand-blue/20 to-brand-cyan/20 border border-brand-cyan/30 flex items-center justify-center text-brand-cyan text-2xl mb-6 group-hover:scale-110 transition-transform">
+                        <i class="fa-solid fa-chart-line"></i>
+                    </div>
+                    <h4 class="text-xl font-bold text-white mb-3 group-hover:text-brand-cyan transition-colors">SEO & Otimização</h4>
+                    <p class="text-slate-400 text-sm leading-relaxed">Posicione seu site nas primeiras páginas do Google com estratégias avançadas de SEO, carregamento ultra-rápido e otimização técnica.</p>
+                </div>
+
+                <!-- Service 4 -->
+                <div class="glass-card p-8 rounded-2xl transition-all duration-300 hover:-translate-y-2 hover:shadow-neon-blue group relative overflow-hidden">
+                    <div class="w-14 h-14 rounded-xl bg-gradient-to-br from-brand-blue/20 to-brand-cyan/20 border border-brand-cyan/30 flex items-center justify-center text-brand-cyan text-2xl mb-6 group-hover:scale-110 transition-transform">
+                        <i class="fa-solid fa-gears"></i>
+                    </div>
+                    <h4 class="text-xl font-bold text-white mb-3 group-hover:text-brand-cyan transition-colors">Sistemas Web</h4>
+                    <p class="text-slate-400 text-sm leading-relaxed">Desenvolvimento de plataformas personalizadas, painéis administrativos (dashboards) e APIs sob medida para sua empresa.</p>
+                </div>
+
+            </div>
+        </div>
+    </section>
+
+    <!-- ABOUT SECTION -->
+    <section id="about" class="py-20 relative">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="grid grid-cols-1 lg:grid-cols-12 gap-12 items-center">
+                
+                <!-- Graphic Illustration Column -->
+                <div class="lg:col-span-5 order-2 lg:order-1">
+                    <div class="relative mx-auto glass-card p-6 rounded-2xl border border-brand-blue/30 text-center">
+                        <img src="Logotipo.jpg" alt="CorpTsuki Emblem" class="w-3/4 mx-auto h-auto rounded-xl shadow-lg border border-brand-cyan/20">
+                        <div class="mt-6 p-4 rounded-xl bg-brand-dark/80 border border-slate-800 text-left">
+                            <div class="flex items-center gap-3 text-brand-cyan mb-2 font-semibold text-sm">
+                                <i class="fa-solid fa-code-compare"></i>
+                                <span>Tecnologia de Ponta</span>
+                            </div>
+                            <p class="text-xs text-slate-300">
+                                Combinamos a estética do design moderno com arquitetura de software escalável para acelerar o crescimento do seu negócio.
+                            </p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Text Content Column -->
+                <div class="lg:col-span-7 order-1 lg:order-2 space-y-6">
+                    <h2 class="text-xs font-bold uppercase tracking-widest text-brand-cyan">Sobre a CorpTsuki</h2>
+                    <h3 class="text-3xl sm:text-4xl font-extrabold text-white">Criamos a ponte entre a sua empresa e o futuro da web</h3>
+                    
+                    <p class="text-slate-300 leading-relaxed">
+                        A <strong class="text-white">CorpTsuki</strong> é uma agência especializada no desenvolvimento de ecossistemas digitais de alta performance. Entendemos que seu website é a vitrine principal do seu negócio na internet e trabalhamos para que ele seja marcante e altamente rentável.
+                    </p>
+
+                    <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 pt-2">
+                        <div class="flex items-start gap-3">
+                            <div class="text-brand-cyan mt-1"><i class="fa-solid fa-circle-check"></i></div>
+                            <div>
+                                <h5 class="text-white font-semibold text-sm">Design Responsivo</h5>
+                                <p class="text-slate-400 text-xs">Perfeito em celulares, tablets e computadores.</p>
+                            </div>
+                        </div>
+
+                        <div class="flex items-start gap-3">
+                            <div class="text-brand-cyan mt-1"><i class="fa-solid fa-circle-check"></i></div>
+                            <div>
+                                <h5 class="text-white font-semibold text-sm">Velocidade Máxima</h5>
+                                <p class="text-slate-400 text-xs">Páginas ultra-rápidas otimizadas para o Google.</p>
+                            </div>
+                        </div>
+
+                        <div class="flex items-start gap-3">
+                            <div class="text-brand-cyan mt-1"><i class="fa-solid fa-circle-check"></i></div>
+                            <div>
+                                <h5 class="text-white font-semibold text-sm">Segurança Avançada</h5>
+                                <p class="text-slate-400 text-xs">Proteção de dados e certificação SSL inclusos.</p>
+                            </div>
+                        </div>
+
+                        <div class="flex items-start gap-3">
+                            <div class="text-brand-cyan mt-1"><i class="fa-solid fa-circle-check"></i></div>
+                            <div>
+                                <h5 class="text-white font-semibold text-sm">Suporte Contínuo</h5>
+                                <p class="text-slate-400 text-xs">Acompanhamento e manutenção da sua aplicação.</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="pt-4">
+                        <a href="#contact" class="inline-flex items-center gap-2 px-6 py-3 rounded-xl text-sm font-semibold text-white bg-brand-blue/20 hover:bg-brand-blue/40 border border-brand-cyan/40 transition-all duration-300">
+                            <span>Conheça Nossa Metodologia</span>
+                            <i class="fa-solid fa-arrow-right text-xs"></i>
+                        </a>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </section>
+
+    <!-- PORTFOLIO SECTION -->
+    <section id="portfolio" class="py-20 relative bg-brand-navy/30 border-t border-brand-blue/10">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="text-center max-w-3xl mx-auto mb-16 space-y-4">
+                <h2 class="text-xs font-bold uppercase tracking-widest text-brand-cyan">Portfólio</h2>
+                <h3 class="text-3xl sm:text-4xl font-extrabold text-white">Trabalhos em Destaque</h3>
+                <p class="text-slate-400 text-base">Confira algumas das soluções web inovadoras desenvolvidas recentemente pela nossa equipe.</p>
+            </div>
+
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+                
+                <!-- Project 1 -->
+                <div class="glass-card rounded-2xl overflow-hidden group border border-brand-blue/20 hover:border-brand-cyan/50 transition-all duration-300">
+                    <div class="relative overflow-hidden h-48 bg-slate-800">
+                        <img src="https://placehold.co/600x400/0b1021/00d4ff?text=CyberE-commerce" alt="Projeto E-commerce CorpTsuki" class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500">
+                        <div class="absolute inset-0 bg-brand-dark/60 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center gap-3">
+                            <span class="p-3 bg-brand-blue rounded-full text-white shadow-neon-blue"><i class="fa-solid fa-eye"></i></span>
+                        </div>
+                    </div>
+                    <div class="p-6 space-y-2">
+                        <span class="text-xs font-bold text-brand-cyan uppercase">E-Commerce & Loja Virtual</span>
+                        <h4 class="text-lg font-bold text-white">Nexus Store Tech</h4>
+                        <p class="text-slate-400 text-xs">Plataforma de e-commerce completa com integração de pagamento via PIX e cartão.</p>
+                    </div>
+                </div>
+
+                <!-- Project 2 -->
+                <div class="glass-card rounded-2xl overflow-hidden group border border-brand-blue/20 hover:border-brand-cyan/50 transition-all duration-300">
+                    <div class="relative overflow-hidden h-48 bg-slate-800">
+                        <img src="https://placehold.co/600x400/0b1021/0088ff?text=SaaS+Dashboard" alt="Projeto Dashboard CorpTsuki" class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500">
+                        <div class="absolute inset-0 bg-brand-dark/60 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center gap-3">
+                            <span class="p-3 bg-brand-blue rounded-full text-white shadow-neon-blue"><i class="fa-solid fa-eye"></i></span>
+                        </div>
+                    </div>
+                    <div class="p-6 space-y-2">
+                        <span class="text-xs font-bold text-brand-cyan uppercase">Sistema Web SaaS</span>
+                        <h4 class="text-lg font-bold text-white">Pulse Analytics Hub</h4>
+                        <p class="text-slate-400 text-xs">Painel administrativo com relatórios em tempo real e gráficos interativos.</p>
+                    </div>
+                </div>
+
+                <!-- Project 3 -->
+                <div class="glass-card rounded-2xl overflow-hidden group border border-brand-blue/20 hover:border-brand-cyan/50 transition-all duration-300">
+                    <div class="relative overflow-hidden h-48 bg-slate-800">
+                        <img src="https://placehold.co/600x400/0b1021/00d4ff?text=Website+Institucional" alt="Projeto Site CorpTsuki" class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500">
+                        <div class="absolute inset-0 bg-brand-dark/60 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center gap-3">
+                            <span class="p-3 bg-brand-blue rounded-full text-white shadow-neon-blue"><i class="fa-solid fa-eye"></i></span>
+                        </div>
+                    </div>
+                    <div class="p-6 space-y-2">
+                        <span class="text-xs font-bold text-brand-cyan uppercase">Landing Page Corporativa</span>
+                        <h4 class="text-lg font-bold text-white">AeroDynamics Global</h4>
+                        <p class="text-slate-400 text-xs">Website institucional de alta conversão focado na captação de clientes corporativos.</p>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </section>
+
+    <!-- TESTIMONIALS SECTION -->
+    <section id="testimonials" class="py-20 relative">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="text-center max-w-3xl mx-auto mb-16 space-y-4">
+                <h2 class="text-xs font-bold uppercase tracking-widest text-brand-cyan">Depoimentos</h2>
+                <h3 class="text-3xl sm:text-4xl font-extrabold text-white">O que nossos clientes dizem</h3>
+            </div>
+
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+                
+                <!-- Testimonial 1 -->
+                <div class="glass-card p-6 rounded-2xl space-y-4 relative">
+                    <div class="text-brand-cyan text-sm flex gap-1">
+                        <i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i>
+                    </div>
+                    <p class="text-slate-300 text-sm italic">"A equipe da CorpTsuki superou todas as expectativas. O site ficou ultra rápido, lindo e nossas vendas aumentaram 40% no primeiro mês!"</p>
+                    <div class="pt-2 border-t border-slate-800 flex items-center gap-3">
+                        <div class="w-10 h-10 rounded-full bg-brand-blue/30 flex items-center justify-center font-bold text-brand-cyan">RL</div>
+                        <div>
+                            <h5 class="text-sm font-bold text-white">Rodrigo Lima</h5>
+                            <p class="text-xs text-slate-400">CEO na TechVentures</p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Testimonial 2 -->
+                <div class="glass-card p-6 rounded-2xl space-y-4 relative">
+                    <div class="text-brand-cyan text-sm flex gap-1">
+                        <i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i>
+                    </div>
+                    <p class="text-slate-300 text-sm italic">"Atendimento impecável! Entenderam a essência da nossa marca e entregaram uma loja virtual completa antes do prazo combinado."</p>
+                    <div class="pt-2 border-t border-slate-800 flex items-center gap-3">
+                        <div class="w-10 h-10 rounded-full bg-brand-blue/30 flex items-center justify-center font-bold text-brand-cyan">CM</div>
+                        <div>
+                            <h5 class="text-sm font-bold text-white">Camila Mendes</h5>
+                            <p class="text-xs text-slate-400">Fundadora da Boutique Glow</p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Testimonial 3 -->
+                <div class="glass-card p-6 rounded-2xl space-y-4 relative">
+                    <div class="text-brand-cyan text-sm flex gap-1">
+                        <i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i>
+                    </div>
+                    <p class="text-slate-300 text-sm italic">"O suporte contínuo da CorpTsuki faz toda a diferença. Qualquer ajuste é resolvido de prontidão com extrema eficiência."</p>
+                    <div class="pt-2 border-t border-slate-800 flex items-center gap-3">
+                        <div class="w-10 h-10 rounded-full bg-brand-blue/30 flex items-center justify-center font-bold text-brand-cyan">FA</div>
+                        <div>
+                            <h5 class="text-sm font-bold text-white">Fernando Almeida</h5>
+                            <p class="text-xs text-slate-400">Diretor na Inovare Consultoria</p>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </section>
+
+    <!-- CONTACT SECTION -->
+    <section id="contact" class="py-20 relative bg-brand-navy/40 border-t border-brand-blue/10">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="grid grid-cols-1 lg:grid-cols-12 gap-12">
+                
+                <!-- Contact Info Column -->
+                <div class="lg:col-span-5 space-y-6">
+                    <h2 class="text-xs font-bold uppercase tracking-widest text-brand-cyan">Fale Conosco</h2>
+                    <h3 class="text-3xl sm:text-4xl font-extrabold text-white">Pronto para dar o próximo passo?</h3>
+                    <p class="text-slate-300 text-sm leading-relaxed">
+                        Preencha o formulário e receba um orçamento personalizado sem compromisso. Nossa equipe responderá em poucas horas!
+                    </p>
+
+                    <div class="space-y-4 pt-4">
+                        <div class="flex items-center gap-4 glass-card p-4 rounded-xl border border-brand-blue/20">
+                            <div class="w-12 h-12 rounded-lg bg-brand-blue/20 text-brand-cyan flex items-center justify-center text-xl">
+                                <i class="fa-solid fa-envelope"></i>
+                            </div>
+                            <div>
+                                <h5 class="text-xs font-semibold text-slate-400">E-mail de Contato</h5>
+                                <p class="text-sm font-bold text-white">contato@corptsuki.com</p>
+                            </div>
+                        </div>
+
+                        <div class="flex items-center gap-4 glass-card p-4 rounded-xl border border-brand-blue/20">
+                            <div class="w-12 h-12 rounded-lg bg-brand-blue/20 text-brand-cyan flex items-center justify-center text-xl">
+                                <i class="fa-brands fa-whatsapp"></i>
+                            </div>
+                            <div>
+                                <h5 class="text-xs font-semibold text-slate-400">WhatsApp / Atendimento</h5>
+                                <p class="text-sm font-bold text-white">+55 (11) 99999-8888</p>
+                            </div>
+                        </div>
+
+                        <div class="flex items-center gap-4 glass-card p-4 rounded-xl border border-brand-blue/20">
+                            <div class="w-12 h-12 rounded-lg bg-brand-blue/20 text-brand-cyan flex items-center justify-center text-xl">
+                                <i class="fa-solid fa-clock"></i>
+                            </div>
+                            <div>
+                                <h5 class="text-xs font-semibold text-slate-400">Horário de Atendimento</h5>
+                                <p class="text-sm font-bold text-white">Segunda a Sexta: 08:00h - 18:00h</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Form Column -->
+                <div class="lg:col-span-7">
+                    <div class="glass-card p-8 rounded-2xl border border-brand-cyan/20 shadow-2xl relative">
+                        
+                        <!-- Notification Toast -->
+                        <div id="form-toast" class="hidden mb-6 p-4 rounded-xl bg-emerald-500/20 border border-emerald-500/40 text-emerald-300 text-sm flex items-center gap-3">
+                            <i class="fa-solid fa-circle-check text-lg"></i>
+                            <span>Sua mensagem foi enviada com sucesso! Entraremos em contato em breve.</span>
+                        </div>
+
+                        <form id="contact-form" class="space-y-6">
+                            <div class="grid grid-cols-1 sm:grid-cols-2 gap-6">
+                                <div>
+                                    <label class="block text-xs font-semibold text-slate-300 mb-2">Seu Nome *</label>
+                                    <input type="text" required placeholder="Ex: João Silva" class="w-full px-4 py-3 rounded-xl bg-brand-dark/80 border border-slate-700 text-white placeholder-slate-500 focus:outline-none focus:border-brand-cyan focus:ring-1 focus:ring-brand-cyan transition-all">
+                                </div>
+                                <div>
+                                    <label class="block text-xs font-semibold text-slate-300 mb-2">Seu E-mail *</label>
+                                    <input type="email" required placeholder="joao@empresa.com" class="w-full px-4 py-3 rounded-xl bg-brand-dark/80 border border-slate-700 text-white placeholder-slate-500 focus:outline-none focus:border-brand-cyan focus:ring-1 focus:ring-brand-cyan transition-all">
+                                </div>
+                            </div>
+
+                            <div class="grid grid-cols-1 sm:grid-cols-2 gap-6">
+                                <div>
+                                    <label class="block text-xs font-semibold text-slate-300 mb-2">Telefone / WhatsApp</label>
+                                    <input type="tel" placeholder="(11) 99999-9999" class="w-full px-4 py-3 rounded-xl bg-brand-dark/80 border border-slate-700 text-white placeholder-slate-500 focus:outline-none focus:border-brand-cyan focus:ring-1 focus:ring-brand-cyan transition-all">
+                                </div>
+                                <div>
+                                    <label class="block text-xs font-semibold text-slate-300 mb-2">Serviço de Interesse</label>
+                                    <select class="w-full px-4 py-3 rounded-xl bg-brand-dark/80 border border-slate-700 text-white focus:outline-none focus:border-brand-cyan focus:ring-1 focus:ring-brand-cyan transition-all">
+                                        <option value="criacao-site">Criação de Site Institucional</option>
+                                        <option value="ecommerce">E-Commerce / Loja Virtual</option>
+                                        <option value="sistema-web">Sistema Web Personalizado</option>
+                                        <option value="seo">SEO e Otimização</option>
+                                    </select>
+                                </div>
+                            </div>
+
+                            <div>
+                                <label class="block text-xs font-semibold text-slate-300 mb-2">Detalhes do Projeto *</label>
+                                <textarea rows="4" required placeholder="Descreva brevemente sua ideia ou necessidade..." class="w-full px-4 py-3 rounded-xl bg-brand-dark/80 border border-slate-700 text-white placeholder-slate-500 focus:outline-none focus:border-brand-cyan focus:ring-1 focus:ring-brand-cyan transition-all"></textarea>
+                            </div>
+
+                            <button type="submit" class="w-full py-4 rounded-xl text-base font-bold text-white bg-gradient-to-r from-brand-blue to-brand-cyan shadow-neon-blue hover:shadow-neon-hover transform hover:-translate-y-0.5 transition-all duration-300 flex items-center justify-center gap-2">
+                                <i class="fa-solid fa-paper-plane"></i>
+                                <span>ENVIAR SOLICITAÇÃO</span>
+                            </button>
+                        </form>
+
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </section>
+
+    <!-- FOOTER -->
+    <footer class="glass-card border-t border-brand-blue/20 pt-12 pb-8 bg-brand-dark/90">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="grid grid-cols-1 md:grid-cols-4 gap-8 mb-12">
+                
+                <!-- Logo & Intro -->
+                <div class="space-y-4 md:col-span-1">
+                    <img src="Logotipo.jpg" alt="CorpTsuki Logo" class="h-10 w-auto object-contain rounded">
+                    <p class="text-xs text-slate-400 leading-relaxed">
+                        Transformando ideias em websites extraordinários com velocidade, tecnologia e inovação contínua.
+                    </p>
+                </div>
+
+                <!-- Navigation Links -->
+                <div>
+                    <h5 class="text-white font-bold text-sm mb-4">Navegação</h5>
+                    <ul class="space-y-2 text-xs text-slate-400">
+                        <li><a href="#home" class="hover:text-brand-cyan transition-colors">Início</a></li>
+                        <li><a href="#services" class="hover:text-brand-cyan transition-colors">Serviços</a></li>
+                        <li><a href="#about" class="hover:text-brand-cyan transition-colors">Sobre Nós</a></li>
+                        <li><a href="#portfolio" class="hover:text-brand-cyan transition-colors">Portfólio</a></li>
+                    </ul>
+                </div>
+
+                <!-- Services Links -->
+                <div>
+                    <h5 class="text-white font-bold text-sm mb-4">Soluções</h5>
+                    <ul class="space-y-2 text-xs text-slate-400">
+                        <li><a href="#services" class="hover:text-brand-cyan transition-colors">Criação de Sites</a></li>
+                        <li><a href="#services" class="hover:text-brand-cyan transition-colors">Lojas Virtuais</a></li>
+                        <li><a href="#services" class="hover:text-brand-cyan transition-colors">Otimização SEO</a></li>
+                        <li><a href="#services" class="hover:text-brand-cyan transition-colors">Sistemas Web</a></li>
+                    </ul>
+                </div>
+
+                <!-- Social & Newsletter -->
+                <div class="space-y-4">
+                    <h5 class="text-white font-bold text-sm">Redes Sociais</h5>
+                    <div class="flex gap-3">
+                        <a href="#" class="w-9 h-9 rounded-lg glass-card border border-brand-blue/30 flex items-center justify-center text-slate-300 hover:text-brand-cyan hover:border-brand-cyan transition-all">
+                            <i class="fa-brands fa-instagram"></i>
+                        </a>
+                        <a href="#" class="w-9 h-9 rounded-lg glass-card border border-brand-blue/30 flex items-center justify-center text-slate-300 hover:text-brand-cyan hover:border-brand-cyan transition-all">
+                            <i class="fa-brands fa-linkedin-in"></i>
+                        </a>
+                        <a href="#" class="w-9 h-9 rounded-lg glass-card border border-brand-blue/30 flex items-center justify-center text-slate-300 hover:text-brand-cyan hover:border-brand-cyan transition-all">
+                            <i class="fa-brands fa-github"></i>
+                        </a>
+                    </div>
+                </div>
+
+            </div>
+
+            <div class="border-t border-slate-800/80 pt-6 flex flex-col sm:flex-row items-center justify-between text-xs text-slate-500 gap-4">
+                <p>&copy; 2026 CorpTsuki. Todos os direitos reservados.</p>
+                <div class="flex gap-4">
+                    <a href="#" class="hover:text-slate-400">Termos de Uso</a>
+                    <a href="#" class="hover:text-slate-400">Política de Privacidade</a>
+                </div>
+            </div>
+        </div>
+    </footer>
+
+    <!-- INTERACTIVE JAVASCRIPT -->
+    <script>
+        // Interactive Mobile Menu Toggle
+        const mobileMenuBtn = document.getElementById('mobile-menu-btn');
+        const mobileMenu = document.getElementById('mobile-menu');
+        const mobileLinks = document.querySelectorAll('.mobile-link');
+
+        mobileMenuBtn.addEventListener('click', () => {
+            mobileMenu.classList.toggle('hidden');
+        });
+
+        mobileLinks.forEach(link => {
+            link.addEventListener('click', () => {
+                mobileMenu.classList.add('hidden');
+            });
+        });
+
+        // Contact Form Handling
+        const contactForm = document.getElementById('contact-form');
+        const formToast = document.getElementById('form-toast');
+
+        contactForm.addEventListener('submit', (e) => {
+            e.preventDefault();
+            formToast.classList.remove('hidden');
+            contactForm.reset();
+            
+            setTimeout(() => {
+                formToast.classList.add('hidden');
+            }, 6000);
+        });
+
+        // Dynamic Interactive Canvas Particles Background
+        const canvas = document.getElementById('bg-canvas');
+        const ctx = canvas.getContext('2d');
+
+        function resizeCanvas() {
+            canvas.width = window.innerWidth;
+            canvas.height = window.innerHeight;
+        }
+
+        window.addEventListener('resize', resizeCanvas);
+        resizeCanvas();
+
+        const particles = [];
+        const particleCount = 45;
+
+        for (let i = 0; i < particleCount; i++) {
+            particles.push({
+                x: Math.random() * canvas.width,
+                y: Math.random() * canvas.height,
+                radius: Math.random() * 2 + 1,
+                vx: (Math.random() - 0.5) * 0.4,
+                vy: (Math.random() - 0.5) * 0.4,
+                alpha: Math.random() * 0.5 + 0.2
+            });
+        }
+
+        function animateParticles() {
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+            particles.forEach((p, index) => {
+                p.x += p.vx;
+                p.y += p.vy;
+
+                if (p.x < 0 || p.x > canvas.width) p.vx *= -1;
+                if (p.y < 0 || p.y > canvas.height) p.vy *= -1;
+
+                ctx.beginPath();
+                ctx.arc(p.x, p.y, p.radius, 0, Math.PI * 2);
+                ctx.fillStyle = `rgba(0, 212, 255, ${p.alpha})`;
+                ctx.shadowBlur = 10;
+                ctx.shadowColor = '#0088ff';
+                ctx.fill();
+
+                // Connect nearby particles with glowing lines
+                for (let j = index + 1; j < particles.length; j++) {
+                    const p2 = particles[j];
+                    const dx = p.x - p2.x;
+                    const dy = p.y - p2.y;
+                    const dist = Math.sqrt(dx * dx + dy * dy);
+
+                    if (dist < 120) {
+                        ctx.beginPath();
+                        ctx.moveTo(p.x, p.y);
+                        ctx.lineTo(p2.x, p2.y);
+                        ctx.strokeStyle = `rgba(0, 136, 255, ${0.15 * (1 - dist / 120)})`;
+                        ctx.lineWidth = 0.8;
+                        ctx.stroke();
+                    }
+                }
+            });
+
+            requestAnimationFrame(animateParticles);
+        }
+
+        animateParticles();
+    </script>
+</body>
+</html>
